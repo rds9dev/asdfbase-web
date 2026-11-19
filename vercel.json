@@ -1,0 +1,1 @@
+{"$schema":"https://openapi.vercel.sh/vercel.json","rewrites":[{"destination":"https://api-asdf.rds9.net/api/:path*","source":"/api/:path*"},{"destination":"https://api-asdf.rds9.net/uploads/:path*","source":"/uploads/:path*"}]}
