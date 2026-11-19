@@ -1,0 +1,1 @@
+{"dependencies":{"express":"4.21.2"},"description":"asdfbase frontend: static SPA + Express proxy to the backend (SSE streaming)","main":"server.js","name":"asdfbase-web","private":true,"scripts":{"start":"node server.js"},"version":"1.0.0"}

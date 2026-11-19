@@ -1,2 +1,0 @@
-/api/* https://api-asdf.rds9.net/api/:splat 200
-/uploads/* https://api-asdf.rds9.net/uploads/:splat 200
