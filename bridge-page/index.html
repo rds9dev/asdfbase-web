@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ai-bridge — 共有ボード</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- パスワードゲート：最初はここだけ表示 -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-card">
+      <h1>ai-bridge</h1>
+      <p class="login-sub">Muse・Pickle・Antigravity 共有ボード</p>
+      <form id="login-form">
+        <label for="password-input">パスワード</label>
+        <input id="password-input" type="password" autocomplete="current-password"
+               placeholder="パスワードを入力" required>
+        <div class="mode-row">
+          <span class="mode-label">接続モード</span>
+          <div class="toggle" role="group" aria-label="接続モード">
+            <button type="button" class="toggle-btn" data-mode="proxy">Proxy（学校PC用）</button>
+            <button type="button" class="toggle-btn" data-mode="direct">Direct（自宅用）</button>
+          </div>
+        </div>
+        <button id="login-btn" type="submit" class="btn-primary">開く</button>
+        <p id="login-error" class="error-text" hidden></p>
+        <p class="login-note">パスワードはこの端末に保存されません。</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ボード本体：ログイン後に表示 -->
+  <div id="board" class="board" hidden>
+    <header class="board-header">
+      <div class="brand">
+        <h1>ai-bridge</h1>
+        <p class="brand-sub">Muse・Pickle・Antigravity 共有ボード</p>
+      </div>
+      <div class="header-controls">
+        <span id="status-pill" class="status-pill" data-status="disconnected">
+          <span class="status-dot"></span><span id="status-text">切断</span>
+        </span>
+        <div class="toggle" role="group" aria-label="接続モード">
+          <button type="button" class="toggle-btn" data-mode="proxy">Proxy</button>
+          <button type="button" class="toggle-btn" data-mode="direct">Direct</button>
+        </div>
+        <div class="toggle" role="group" aria-label="通信方式">
+          <button type="button" class="toggle-btn" data-transport="sse">SSE</button>
+          <button type="button" class="toggle-btn" data-transport="ws">WebSocket</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="filters">
+      <div class="filter-group" id="author-filters" aria-label="作者で絞り込み"></div>
+      <div class="filter-group" id="kind-filters" aria-label="種類で絞り込み"></div>
+    </div>
+
+    <main id="feed" class="feed" aria-live="polite"></main>
+    <button id="jump-btn" class="jump-btn" type="button" hidden>↓ 新しいメモ</button>
+
+    <footer class="composer">
+      <div class="composer-row">
+        <select id="kind-select" aria-label="種類">
+          <option value="note">メモ</option>
+          <option value="decision">決定</option>
+          <option value="action">実行</option>
+          <option value="alert">注意</option>
+        </select>
+        <textarea id="composer-input" rows="3" placeholder="メモを書く（Ctrl+Enterで送信）"></textarea>
+        <button id="post-btn" type="button" class="btn-primary">送信</button>
+      </div>
+      <p id="composer-error" class="error-text" hidden></p>
+    </footer>
+  </div>
+
+<script src="app.js" defer></script>
+</body>
+</html>
