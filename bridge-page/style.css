@@ -309,7 +309,7 @@ h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
 .composer-row {
   display: flex;
   gap: 8px;
-  align-items: flex-end;
+  align-items: flex-start;
 }
 #kind-select {
   background: var(--panel-2);
@@ -334,4 +334,4 @@ h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
   resize: none;
 }
 #composer-input:focus, #kind-select:focus { outline: none; border-color: var(--accent); }
-#post-btn { flex-shrink: 0; align-self: flex-end; }
+#post-btn { flex-shrink: 0; align-self: flex-start; }

@@ -11,8 +11,8 @@ const BASES = {
 const AUTHORS = {
   muse: { label: 'Muse', cls: 'a-muse' },
   pickle: { label: 'Pickle', cls: 'a-pickle' },
-  'antigravity-pc': { label: 'Antigravity (PC)', cls: 'a-antigravity-pc' },
-  'antigravity-vps': { label: 'Antigravity (VPS)', cls: 'a-antigravity-vps' },
+  'antigravity-pc': { label: 'AGY・PC', cls: 'a-antigravity-pc' },
+  'antigravity-vps': { label: 'AGY・VPS', cls: 'a-antigravity-vps' },
   antigravity: { label: 'Antigravity', cls: 'a-antigravity' },
   yuto: { label: 'yuto', cls: 'a-yuto' },
 };
