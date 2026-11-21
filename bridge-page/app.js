@@ -53,8 +53,11 @@ const loginScreen = $('#login-screen');
 const board = $('#board');
 const loginForm = $('#login-form');
 const passwordInput = $('#password-input');
+const rememberInput = $('#remember-input');
 const loginBtn = $('#login-btn');
 const loginError = $('#login-error');
+const logoutBtn = $('#logout-btn');
+const PW_KEY = 'ai-bridge-password';
 const feed = $('#feed');
 const jumpBtn = $('#jump-btn');
 const statusPill = $('#status-pill');
@@ -255,8 +258,12 @@ loginForm.addEventListener('submit', async (ev) => {
       showLoginError('接続できませんでした（' + res.status + '）。しばらくしてからもう一度お試しください。');
       return;
     }
-    // ログイン成功。パスワードはJS変数にだけ保持する
+    // ログイン成功。パスワードはJS変数に保持し、希望すればこの端末にも保存する
     state.password = pw;
+    try {
+      if (rememberInput.checked) localStorage.setItem(PW_KEY, pw);
+      else localStorage.removeItem(PW_KEY);
+    } catch (e) { /* プライベートモード等では保存できないことがある */ }
     passwordInput.value = '';
     state.loggedIn = true;
     loginScreen.hidden = true;
@@ -278,10 +285,52 @@ function authFailed() {
   state.loggedIn = false;
   state.notes = [];
   state.noteIds.clear();
+  try { localStorage.removeItem(PW_KEY); } catch (e) {}
   board.hidden = true;
   loginScreen.hidden = false;
   setStatus('disconnected');
   showLoginError('パスワードが無効です。もう一度ログインしてください。');
+}
+
+// ログアウト：保存したパスワードを消してログイン画面に戻す
+function logout() {
+  stopStream();
+  state.password = '';
+  state.loggedIn = false;
+  state.notes = [];
+  state.noteIds.clear();
+  try { localStorage.removeItem(PW_KEY); } catch (e) {}
+  board.hidden = true;
+  loginScreen.hidden = false;
+  setStatus('disconnected');
+  hideLoginError();
+  passwordInput.value = '';
+  passwordInput.focus();
+}
+
+// 保存済みパスワードで自動ログインを試みる。失敗したらログイン画面のまま。
+async function tryAutoLogin() {
+  let saved = null;
+  try { saved = localStorage.getItem(PW_KEY); } catch (e) {}
+  if (!saved) return false;
+  try {
+    const res = await fetch(BASES[state.mode] + '/notes?limit=1', {
+      headers: { 'X-Bridge-Password': saved },
+    });
+    if (!res.ok) {
+      try { localStorage.removeItem(PW_KEY); } catch (e) {}
+      return false;
+    }
+    state.password = saved;
+    state.loggedIn = true;
+    loginScreen.hidden = true;
+    board.hidden = false;
+    await loadNotes();
+    startStream();
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 /* ---------- メモの読み込み ---------- */
@@ -551,5 +600,8 @@ function init() {
       postNote();
     }
   });
+  logoutBtn.addEventListener('click', logout);
+  // 保存済みパスワードがあれば自動で開く
+  tryAutoLogin();
 }
 init();

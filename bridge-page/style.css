@@ -322,11 +322,15 @@ h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
   border-top: 1px solid var(--border);
   padding: 12px 0;
 }
+.composer-controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
 .composer-row {
   display: flex;
   gap: 8px;
-  align-items: flex-start;
-  flex-wrap: wrap;
+  align-items: flex-end;
 }
 #kind-select, #mention-select {
   background: var(--panel-2);
@@ -351,4 +355,28 @@ h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
   resize: none;
 }
 #composer-input:focus, #kind-select:focus, #mention-select:focus { outline: none; border-color: var(--accent); }
-#post-btn { flex-shrink: 0; align-self: flex-start; }
+#post-btn { flex-shrink: 0; align-self: flex-end; }
+
+/* ログイン画面：端末に保存するチェックボックス */
+.remember-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text);
+  margin-top: 10px;
+  cursor: pointer;
+}
+.remember-row input { accent-color: var(--accent); }
+
+/* ヘッダーのログアウトボタン */
+.logout-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.logout-btn:hover { color: var(--text); border-color: var(--accent); }
