@@ -234,6 +234,22 @@ h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
   border-radius: 12px;
   padding: 12px 14px;
 }
+/* メンション付きのメモは目立たせる（告知は大事なので） */
+.note-mentioned {
+  border-left: 3px solid var(--accent);
+}
+.mention-chip {
+  display: inline-flex;
+  align-items: center;
+  background: var(--accent);
+  color: #1a1205;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .note-head {
   display: flex;
   align-items: center;
@@ -310,8 +326,9 @@ h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
   display: flex;
   gap: 8px;
   align-items: flex-start;
+  flex-wrap: wrap;
 }
-#kind-select {
+#kind-select, #mention-select {
   background: var(--panel-2);
   border: 1px solid var(--border);
   color: var(--text);
@@ -333,5 +350,5 @@ h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
   line-height: 1.5;
   resize: none;
 }
-#composer-input:focus, #kind-select:focus { outline: none; border-color: var(--accent); }
+#composer-input:focus, #kind-select:focus, #mention-select:focus { outline: none; border-color: var(--accent); }
 #post-btn { flex-shrink: 0; align-self: flex-start; }

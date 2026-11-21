@@ -62,6 +62,7 @@ const statusText = $('#status-text');
 const authorFilters = $('#author-filters');
 const kindFilters = $('#kind-filters');
 const kindSelect = $('#kind-select');
+const mentionSelect = $('#mention-select');
 const composerInput = $('#composer-input');
 const postBtn = $('#post-btn');
 const composerError = $('#composer-error');
@@ -129,13 +130,18 @@ function showFeedMessage(text) {
 
 function createNoteEl(note) {
   const el = document.createElement('article');
-  el.className = 'note';
+  el.className = 'note' + (note.mention ? ' note-mentioned' : '');
   el.dataset.id = String(note.id);
   const a = authorInfo(note.author);
   const k = kindInfo(note.kind || 'note');
+  // メンションがあるメモは宛先を目立たせて表示する（告知は大事なので目立つ色に）。
+  const mentionHtml = note.mention
+    ? '<span class="mention-chip">→ @' + escapeHtml(authorInfo(note.mention).label) + '</span>'
+    : '';
   el.innerHTML =
     '<div class="note-head">' +
       '<span class="author-badge ' + a.cls + '"><span class="dot"></span>' + escapeHtml(a.label) + '</span>' +
+      mentionHtml +
       '<span class="kind-badge ' + k.cls + '">' + escapeHtml(k.label) + '</span>' +
       '<span class="note-time">' + escapeHtml(formatTs(note.ts)) + '</span>' +
     '</div>' +
@@ -483,13 +489,14 @@ async function postNote() {
   const text = composerInput.value.trim();
   if (!text) return;
   const kind = kindSelect.value;
+  const mention = mentionSelect.value || null;
   postBtn.disabled = true;
   hideComposerError();
   try {
     const res = await fetch(base() + '/notes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Bridge-Password': state.password },
-      body: JSON.stringify({ author: 'yuto', text, kind, priority: 'normal' }),
+      body: JSON.stringify({ author: 'yuto', text, kind, mention, priority: 'normal' }),
     });
     if (res.status === 401) {
       showComposerError('パスワードが無効です。ページを再読み込みしてログインし直してください。');
@@ -504,6 +511,7 @@ async function postNote() {
       ? created
       : (created && created.note && created.note.id != null ? created.note : null);
     composerInput.value = '';
+    mentionSelect.value = '';
     if (noteObj) addNote(noteObj); // ストリーム経由でも届くが、重複はaddNoteが弾く
   } catch (e) {
     showComposerError('送信に失敗しました。ネットワークを確認してください。');
