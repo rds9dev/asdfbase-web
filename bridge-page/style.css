@@ -283,6 +283,7 @@ h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
 .k-decision { color: var(--accent-hi); border-color: rgba(245, 158, 11, .45); background: rgba(245, 158, 11, .1); }
 .k-action { color: #34D399; border-color: rgba(16, 185, 129, .45); background: rgba(16, 185, 129, .1); }
 .k-alert { color: #F87171; border-color: rgba(251, 44, 54, .5); background: rgba(251, 44, 54, .1); }
+.k-question { color: #38BDF8; border-color: rgba(56, 189, 248, .45); background: rgba(56, 189, 248, .1); }
 
 .note-time {
   margin-left: auto;

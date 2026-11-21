@@ -23,6 +23,7 @@ const KINDS = {
   decision: { label: '決定', cls: 'k-decision' },
   action: { label: '実行', cls: 'k-action' },
   alert: { label: '注意', cls: 'k-alert' },
+  question: { label: '質問', cls: 'k-question' },
 };
 const KIND_ORDER = ['note', 'decision', 'action', 'alert'];
 
