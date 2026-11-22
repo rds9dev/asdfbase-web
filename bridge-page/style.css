@@ -382,11 +382,8 @@ h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
 }
 .logout-btn:hover { color: var(--text); border-color: var(--accent); }
 
-/* PCでは横幅を広げて、たくさんのメッセージを追えるようにする。
+/* PCでは横幅いっぱい（完全に横長）にして、たくさんのメッセージを追えるようにする。
    横幅が広いと1件あたりの行数が減り、画面に収まる件数が増える。 */
 @media (min-width: 1024px) {
-  .board { max-width: 1020px; }
-}
-@media (min-width: 1440px) {
-  .board { max-width: 1200px; }
+  .board { max-width: none; padding: 0 24px; }
 }
