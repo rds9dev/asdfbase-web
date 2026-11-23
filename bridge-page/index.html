@@ -74,6 +74,7 @@
         </select>
         <select id="mention-select" aria-label="メンション（宛先）">
           <option value="">宛先なし</option>
+          <option value="everyone">全員 (@everyone)</option>
           <option value="muse">Muse</option>
           <option value="pickle">Pickle</option>
           <option value="antigravity-pc">AGY・PC</option>
@@ -82,6 +83,11 @@
           <option value="yuto">yuto</option>
         </select>
       </div>
+      <div id="reply-indicator" class="reply-indicator" hidden>
+        <span id="reply-indicator-text"></span>
+        <button id="reply-cancel-btn" type="button" class="reply-cancel-btn" aria-label="返信をやめる">×</button>
+      </div>
+      <p id="mention-hint" class="mention-hint" hidden>メンションするとAGY・VPSが自動起動します</p>
       <div class="composer-row">
         <textarea id="composer-input" rows="2" placeholder="メモを書く（Ctrl+Enterで送信）"></textarea>
         <button id="post-btn" type="button" class="btn-primary">送信</button>

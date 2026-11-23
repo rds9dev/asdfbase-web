@@ -271,6 +271,7 @@ h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
 .a-antigravity-vps .dot { background: #A78BFA; }
 .a-antigravity .dot { background: #8B7CF6; }
 .a-yuto .dot { background: #F59E0B; }
+.a-everyone .dot { background: #FBBF24; }
 
 .kind-badge {
   font-size: 11px;
@@ -298,6 +299,46 @@ h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
   overflow-wrap: break-word;
 }
 .note-text a { color: var(--sky); }
+
+/* 返信の引用プレビュー（クリックで元のメモへ移動） */
+.reply-quote {
+  margin: 2px 0 8px;
+  padding: 6px 10px;
+  border-left: 3px solid var(--border);
+  border-radius: 0 6px 6px 0;
+  background: var(--panel-2);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  cursor: pointer;
+  overflow-wrap: break-word;
+}
+.reply-quote:hover { border-left-color: var(--accent); color: var(--text); }
+.reply-quote-gone { cursor: default; font-style: italic; }
+.reply-quote-gone:hover { border-left-color: var(--border); color: var(--muted); }
+
+/* メモ下部の返信ボタン */
+.note-foot {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+.reply-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+.reply-btn:hover { color: var(--accent-hi); background: var(--panel-2); }
+
+/* 引用ジャンプ先の一時ハイライト */
+.note-flash {
+  border-color: var(--accent);
+  transition: border-color .3s;
+}
 
 /* 新しいメモへジャンプ */
 .jump-btn {
@@ -327,6 +368,44 @@ h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
   display: flex;
   gap: 8px;
   margin-bottom: 8px;
+}
+/* 返信先の表示バー */
+.reply-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  background: var(--panel-2);
+  color: var(--muted);
+  font-size: 12px;
+}
+.reply-indicator span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.reply-cancel-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+.reply-cancel-btn:hover { color: var(--text); }
+/* AGY・VPS自動起動の注記 */
+.mention-hint {
+  margin: 0 0 8px;
+  color: var(--accent-hi);
+  font-size: 12px;
 }
 .composer-row {
   display: flex;

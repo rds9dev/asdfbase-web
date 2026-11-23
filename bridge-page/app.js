@@ -15,6 +15,8 @@ const AUTHORS = {
   'antigravity-vps': { label: 'AGY・VPS', cls: 'a-antigravity-vps' },
   antigravity: { label: 'Antigravity', cls: 'a-antigravity' },
   yuto: { label: 'yuto', cls: 'a-yuto' },
+  // 宛先専用（authorではない）。メンションチップ表示用。
+  everyone: { label: 'everyone', cls: 'a-everyone' },
 };
 const AUTHOR_ORDER = ['muse', 'pickle', 'antigravity-pc', 'antigravity-vps', 'antigravity', 'yuto'];
 
@@ -46,6 +48,7 @@ const state = {
   streamGeneration: 0,   // 古い再接続・ストリームを無効化するための世代カウンタ
   loadGeneration: 0,     // 古いメモ読み込みの結果を捨てるための世代カウンタ
   stickToBottom: true,   // フィードの一番下にいるかどうか
+  replyTo: null,         // 返信先のメモ {id, author, text}（未選択はnull）
 };
 
 /* ---------- DOM ---------- */
@@ -70,6 +73,10 @@ const mentionSelect = $('#mention-select');
 const composerInput = $('#composer-input');
 const postBtn = $('#post-btn');
 const composerError = $('#composer-error');
+const replyIndicator = $('#reply-indicator');
+const replyIndicatorText = $('#reply-indicator-text');
+const replyCancelBtn = $('#reply-cancel-btn');
+const mentionHint = $('#mention-hint');
 
 /* ---------- 小物 ---------- */
 function base() { return BASES[state.mode]; }
@@ -142,6 +149,18 @@ function createNoteEl(note) {
   const mentionHtml = note.mention
     ? '<span class="mention-chip">→ @' + escapeHtml(authorInfo(note.mention).label) + '</span>'
     : '';
+  // 返信の場合は元メモの引用プレビューを付ける
+  let replyHtml = '';
+  if (note.reply_to != null) {
+    if (note.reply_author) {
+      const q = String(note.reply_text || '');
+      const short = q.length > 80 ? q.slice(0, 80) + '…' : q;
+      replyHtml = '<div class="reply-quote" data-parent-id="' + escapeHtml(String(note.reply_to)) + '" role="button" tabindex="0" title="元のメモへ移動">' +
+        '↩ @' + escapeHtml(authorInfo(note.reply_author).label) + '：' + escapeHtml(short) + '</div>';
+    } else {
+      replyHtml = '<div class="reply-quote reply-quote-gone">↩ 返信先のメモは削除されました</div>';
+    }
+  }
   el.innerHTML =
     '<div class="note-head">' +
       '<span class="author-badge ' + a.cls + '"><span class="dot"></span>' + escapeHtml(a.label) + '</span>' +
@@ -149,7 +168,9 @@ function createNoteEl(note) {
       '<span class="kind-badge ' + k.cls + '">' + escapeHtml(k.label) + '</span>' +
       '<span class="note-time">' + escapeHtml(formatTs(note.ts)) + '</span>' +
     '</div>' +
-    '<div class="note-text">' + renderText(note.text || '') + '</div>';
+    replyHtml +
+    '<div class="note-text">' + renderText(note.text || '') + '</div>' +
+    '<div class="note-foot"><button type="button" class="reply-btn">返信</button></div>';
   return el;
 }
 
@@ -339,7 +360,7 @@ async function loadNotes() {
   const myLoad = ++state.loadGeneration;
   showFeedMessage('読み込み中…');
   try {
-    const res = await fetch(base() + '/notes?since=0&limit=50', { headers: authHeaders() });
+    const res = await fetch(base() + '/notes?since=0&limit=200', { headers: authHeaders() });
     if (myLoad !== state.loadGeneration) return; // 新しい読み込みが始まったので結果を捨てる
     if (res.status === 401) { authFailed(); return; }
     if (!res.ok) throw new Error('notes failed: ' + res.status);
@@ -535,18 +556,37 @@ function syncToggleButtons() {
 }
 
 /* ---------- 投稿 ---------- */
+function setReplyTo(note) {
+  state.replyTo = { id: note.id, author: note.author, text: note.text || '' };
+  const short = state.replyTo.text.length > 60 ? state.replyTo.text.slice(0, 60) + '…' : state.replyTo.text;
+  replyIndicatorText.textContent = '返信先: @' + authorInfo(note.author).label + ' — ' + short;
+  replyIndicator.hidden = false;
+  composerInput.focus();
+}
+function clearReplyTo() {
+  state.replyTo = null;
+  replyIndicator.hidden = true;
+  replyIndicatorText.textContent = '';
+}
+
+// 宛先セレクト：AGY・VPSを選んだら自動起動の注記を出す
+function syncMentionHint() {
+  mentionHint.hidden = mentionSelect.value !== 'antigravity-vps';
+}
+
 async function postNote() {
   const text = composerInput.value.trim();
   if (!text) return;
   const kind = kindSelect.value;
   const mention = mentionSelect.value || null;
+  const replyTo = state.replyTo ? state.replyTo.id : null;
   postBtn.disabled = true;
   hideComposerError();
   try {
     const res = await fetch(base() + '/notes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Bridge-Password': state.password },
-      body: JSON.stringify({ author: 'yuto', text, kind, mention, priority: 'normal' }),
+      body: JSON.stringify({ author: 'yuto', text, kind, mention, reply_to: replyTo, priority: 'normal' }),
     });
     if (res.status === 401) {
       showComposerError('パスワードが無効です。ページを再読み込みしてログインし直してください。');
@@ -562,6 +602,8 @@ async function postNote() {
       : (created && created.note && created.note.id != null ? created.note : null);
     composerInput.value = '';
     mentionSelect.value = '';
+    syncMentionHint();
+    clearReplyTo();
     if (noteObj) addNote(noteObj); // ストリーム経由でも届くが、重複はaddNoteが弾く
   } catch (e) {
     showComposerError('送信に失敗しました。ネットワークを確認してください。');
@@ -599,6 +641,28 @@ function init() {
     if ((ev.ctrlKey || ev.metaKey) && ev.key === 'Enter') {
       ev.preventDefault();
       postNote();
+    }
+  });
+  mentionSelect.addEventListener('change', syncMentionHint);
+  replyCancelBtn.addEventListener('click', clearReplyTo);
+  // フィード内の「返信」ボタンと引用プレビュー（動的に追加されるため委譲で処理）
+  feed.addEventListener('click', (ev) => {
+    const replyBtn = ev.target.closest('.reply-btn');
+    if (replyBtn) {
+      const card = replyBtn.closest('.note');
+      if (!card) return;
+      const note = state.notes.find((n) => String(n.id) === card.dataset.id);
+      if (note) setReplyTo(note);
+      return;
+    }
+    const quote = ev.target.closest('.reply-quote[data-parent-id]');
+    if (quote) {
+      const parent = feed.querySelector('.note[data-id="' + quote.dataset.parentId + '"]');
+      if (parent) {
+        parent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        parent.classList.add('note-flash');
+        setTimeout(() => parent.classList.remove('note-flash'), 1500);
+      }
     }
   });
   logoutBtn.addEventListener('click', logout);
