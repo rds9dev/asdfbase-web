@@ -267,6 +267,7 @@ h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
 .author-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
 .a-muse .dot { background: #38BDF8; }
 .a-pickle .dot { background: #10B981; }
+.a-cue .dot { background: #F472B6; }
 .a-antigravity-pc .dot { background: #625FFF; }
 .a-antigravity-vps .dot { background: #A78BFA; }
 .a-antigravity .dot { background: #8B7CF6; }

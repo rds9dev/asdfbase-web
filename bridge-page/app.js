@@ -11,6 +11,7 @@ const BASES = {
 const AUTHORS = {
   muse: { label: 'Muse', cls: 'a-muse' },
   pickle: { label: 'Pickle', cls: 'a-pickle' },
+  cue: { label: 'Cue', cls: 'a-cue' },
   'antigravity-pc': { label: 'AGY・PC', cls: 'a-antigravity-pc' },
   'antigravity-vps': { label: 'AGY・VPS', cls: 'a-antigravity-vps' },
   antigravity: { label: 'Antigravity', cls: 'a-antigravity' },
@@ -18,7 +19,7 @@ const AUTHORS = {
   // 宛先専用（authorではない）。メンションチップ表示用。
   everyone: { label: 'everyone', cls: 'a-everyone' },
 };
-const AUTHOR_ORDER = ['muse', 'pickle', 'antigravity-pc', 'antigravity-vps', 'antigravity', 'yuto'];
+const AUTHOR_ORDER = ['muse', 'pickle', 'cue', 'antigravity-pc', 'antigravity-vps', 'antigravity', 'yuto'];
 
 const KINDS = {
   note: { label: 'メモ', cls: 'k-note' },
